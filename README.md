@@ -17,7 +17,7 @@ docker-compose -f dev.yml up -d
 
 # Additional Info
 
-To confirm your ElasticSearch docker instance is running:
+To confirm your ElasticSearch instance is running:
 ```bash
 curl http://localhost:9200
 {
@@ -37,7 +37,7 @@ curl http://localhost:9200
 }
 ```
 
-To confirm your Kibana docker instance is running:
+To confirm your Kibana instance is running:
 ```bash
 curl http://localhost:5601
 <script>var hashRoute = '/app/kibana';

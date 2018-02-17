@@ -1,0 +1,96 @@
+################### APM Server Configuration #########################
+
+############################# APM Server ######################################
+
+apm-server:
+
+  # Defines the host and port the server is listening on
+  host: "0.0.0.0:8200"
+
+  # Please be aware that frontend support is an experimental feature at the moment!
+  frontend:
+    # To enable experimental frontend support set this to true.
+    enabled: true
+
+  # Authorization token to be checked. If a token is set here the agents must
+  # send their token in the following format: Authorization: Bearer <secret-token>.
+  # It is recommended to use an authorization token in combination with SSL enabled.
+  #secret_token:
+  #ssl.enabled: false
+  #ssl.certificate : "path/to/cert"
+  #ssl.key : "path/to/private_key"
+
+#==================== Elasticsearch template setting ==========================
+
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+
+#============================== Dashboards =====================================
+#
+# These settings control loading the sample dashboards to the Kibana index. Loading
+# the dashboards is disabled by default and can be enabled either by setting the
+# options here, or by using the `-setup` CLI flag or the `setup` command.
+#setup.dashboards.enabled: false
+
+#============================== Kibana =====================================
+
+# Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
+# This requires a Kibana endpoint configuration.
+setup.kibana:
+
+  # Kibana Host
+  # Scheme and port can be left out and will be set to the default (http and 5601)
+  # In case you specify and additional path, the scheme is required: http://localhost:5601/path
+  # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
+  host: "kibana:5601"
+
+#================================ Outputs =====================================
+
+# Configure what output to use when sending the data collected by the beat.
+
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["elasticsearch:9200"]
+
+  # Optional index name. The default is "apm" plus version plus date
+  # and generates apm-%{[beat.version]}-YYYY.MM.DD keys.
+  # In case you modify this pattern you must update following configuration accordingly:
+  # * `setup.template.name`
+  # * `setup.template.pattern`
+  # * `setup.dashboards.index`
+  #
+  #index: "apm-%{[beat.version]}-%{+yyyy.MM.dd}"
+
+  # By specifying additional indices documents matching the criteria are indexed in a seperate index.
+  # In case you are uploading source map documents (which is currently an experimental feature),
+  # source map documents are going to their own index with the configuration below.
+  #
+  # Be aware that there is only one Elasticsearch template and one Kibana Index Pattern,
+  # which needs to match against indices for ingested documents as well as for source maps.
+  # In case you modify the index patterns you must ensure to use the same prefix for all indices,
+  # and to accordingly set:
+  # * `setup.template.name`
+  # * `setup.template.pattern`
+  # * `setup.dashboards.index`
+  indices:
+    - index: "apm-%{[beat.version]}-sourcemap"
+      when.contains:
+        processor.event: "sourcemap"
+
+  # Optional protocol and basic auth credentials.
+  #protocol: "https"
+  #username: "elastic"
+  #password: "changeme"
+
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: error, warning, info, debug
+#logging.level: debug
+
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]
