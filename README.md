@@ -12,7 +12,7 @@ Clone this repo into a folder
 ```bash
 git clone git@github.com:gofaniyi/apm-stack-configuration.git
 cd apm-stack-configuration
-docker-compose -f apmserver.yml up -d
+docker-compose -f dev.yml up -d
 ```
 
 # Additional Info
